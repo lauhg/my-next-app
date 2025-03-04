@@ -1,6 +1,49 @@
+"use client";
+
+import { useCallback } from "react";
 import Image from "next/image";
 
+async function queryCloudflareDns(domain: string, recordType = 'A') {
+  const url = 'https://cloudflare-dns.com/dns-query';
+  const params = {
+    name: domain,
+    type: recordType
+  };
+
+  try {
+    const response = await fetch(`${url}?${new URLSearchParams(params)}`, {
+      headers: { 'Accept': 'application/dns-json' }
+    });
+    const data: any = await response.json();
+
+    if (data.Status === 0) {
+      return data.Answer?.map((record: any) => record.data) || [];
+    } else {
+      return [];
+    }
+  } catch (error) {
+    console.error('查询失败:', error);
+    return [];
+  }
+}
+
 export default function Home() {
+  // const handleInputSubmit = useCallback(async (e: React.ChangeEvent<HTMLInputElement>) => {
+  //   console.log('handleInputSubmit');
+  //   const domain = e.target.value;
+  //   const records = await queryCloudflareDns(domain);
+  //   console.log(records);
+  // }, [])
+
+  const handleInputSubmit2 = useCallback(async (e: React.KeyboardEvent<HTMLInputElement>) => {
+    if (e.key === 'Enter') {
+      console.log('handleInputSubmit2');
+      const domain = e.currentTarget.value;
+      const records = await queryCloudflareDns(domain);
+      console.log(records);
+    }
+  }, [])
+
   return (
     <div className="grid grid-rows-[20px_1fr_20px] items-center justify-items-center min-h-screen p-8 pb-20 gap-16 sm:p-20 font-[family-name:var(--font-geist-sans)]">
       <main className="flex flex-col gap-8 row-start-2 items-center sm:items-start">
@@ -12,6 +55,13 @@ export default function Home() {
           height={38}
           priority
         />
+
+        <input
+          type="text"
+          className="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+          onKeyDown={handleInputSubmit2}
+        />
+
         <ol className="list-inside list-decimal text-sm text-center sm:text-left font-[family-name:var(--font-geist-mono)]">
           <li className="mb-2">
             Get started by editing{" "}
