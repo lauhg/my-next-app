@@ -2,17 +2,23 @@
 
 import { useCallback } from "react";
 import Image from "next/image";
+import { Input } from "@/components/ui/input"
 
 async function queryCloudflareDns(domain: string, recordType = 'A') {
-  const url = 'https://cloudflare-dns.com/dns-query';
+  // const url = 'https://cloudflare-dns.com/dns-query';
+  // const url = 'https://google.com';
+  const url = 'https://my-first-worker.fkingtop.workers.dev'
   const params = {
     name: domain,
     type: recordType
   };
 
+  // await fetch('https://cloudflare-dns.com/dns-query?name=v2ex.com&type=A', {
+  //   headers: { 'Accept': 'application/dns-json' }
+  // })
   try {
     const response = await fetch(`${url}?${new URLSearchParams(params)}`, {
-      headers: { 'Accept': 'application/dns-json' }
+      // headers: { 'Accept': 'application/dns-json' }
     });
     const data: any = await response.json();
 
@@ -61,6 +67,8 @@ export default function Home() {
           className="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
           onKeyDown={handleInputSubmit2}
         />
+
+<Input />
 
         <ol className="list-inside list-decimal text-sm text-center sm:text-left font-[family-name:var(--font-geist-mono)]">
           <li className="mb-2">
